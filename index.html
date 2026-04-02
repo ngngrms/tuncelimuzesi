@@ -3,284 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tunceli Müzesi</title>
+  <title>Tunceli Müzesi - İnteraktif Tur</title>
+
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(-45deg, #f9f9f9, #d0e6f9, #f9f9f9, #cce7ff);
-      background-size: 400% 400%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at center, #1e272e 0%, #000000 100%);
       margin: 0;
+      color: white;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      animation: gradientBG 15s ease infinite;
       overflow-x: hidden;
     }
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-    h1 {
+
+    /* Menü görünürlüğü kontrolü */
+    .menu-container {
+      position: relative;
+      width: 450px;
+      height: 450px;
       margin-top: 50px;
-      color: #2c3e50;
-      font-size: 3em;
-      opacity: 0;
-      transform: translateY(-50px);
-      animation: fadeInDown 1.2s forwards 0.5s;
-    }
-    @keyframes fadeInDown { to { opacity: 1; transform: translateY(0); } }
-    .buttons {
       display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      margin: 30px 0;
-      opacity: 0;
-      transform: translateY(50px);
-      animation: fadeInUp 1s forwards 1.2s;
-    }
-    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      background-color: #3498db;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover { background-color: #2980b9; }
-    .content {
-      width: 90%;
-      max-width: 900px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-      display: none;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s ease;
-      margin-bottom: 30px;
-    }
-    .content.show {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Galeri tasarımı */
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-    }
-    .gallery img {
-      width: calc(50% - 10px);
-      max-width: 300px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .gallery img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    }
-
-    /* Fotoğraf modal */
-    .photo-modal {
-      display: none;
-      position: fixed;
-      z-index: 20;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
       justify-content: center;
       align-items: center;
-      animation: fadeIn 0.3s;
+      transition: opacity 0.5s ease;
     }
-    .photo-modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-      animation: zoomIn 0.3s;
+
+    .menu-hidden {
+      display: none !important;
     }
-    .photo-modal .close {
+
+    .center-circle {
+      z-index: 10;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 3px solid #3498db;
+      box-shadow: 0 0 40px rgba(52, 152, 219, 0.6), inset 0 0 20px rgba(52, 152, 219, 0.4);
+      animation: pulse 3s infinite ease-in-out;
+    }
+
+    .center-circle h1 {
+      font-size: 1.1em;
+      margin: 0;
+      letter-spacing: 1px;
+      color: #ecf0f1;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .nav-btn {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #e74c3c;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(145deg, #3498db, #2980b9);
+      color: white;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+      z-index: 5;
+    }
+
+    .nav-btn span { font-size: 24px; margin-bottom: 5px; }
+
+    .nav-btn:hover {
+      transform: scale(1.08);
+      background: linear-gradient(145deg, #2980b9, #3498db);
+      box-shadow: 0 0 25px #3498db;
+    }
+
+    .btn-info { top: 0; left: 170px; }
+    .btn-video { top: 170px; right: 0; }
+    .btn-photos { bottom: 0; left: 170px; }
+    .btn-location { top: 170px; left: 0; }
+
+    .content {
+      width: 85%;
+      max-width: 850px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #2c3e50;
+      padding: 40px;
+      border-radius: 25px;
+      margin-top: 40px;
+      display: none;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+      margin-bottom: 60px;
+      border-bottom: 8px solid #3498db;
+    }
+
+    .content.show { display: block; animation: slideUp 0.6s ease-out; }
+
+    .back-btn {
+      background: #34495e;
       color: white;
       border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      width: 40px;
-      height: 40px;
+      padding: 10px 20px;
+      border-radius: 50px;
       cursor: pointer;
+      margin-bottom: 20px;
+      font-weight: bold;
+      transition: 0.3s;
     }
-    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-    @keyframes zoomIn { from {transform: scale(0.7);} to {transform: scale(1);} }
 
-    /* Video modal */
+    .back-btn:hover { background: #2c3e50; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px solid #ddd;
+    }
+
+    .gallery img:hover { transform: scale(1.05); border-color: #3498db; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .modal {
       display: none;
       position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      position: relative;
-      width: 80%;
-      max-width: 800px;
-    }
-    .modal-content iframe {
-      width: 100%;
-      height: 450px;
-      border-radius: 10px;
-      border: none;
-    }
-    .modal-content .close {
-      position: absolute;
-      top: -15px;
-      right: -15px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 18px;
-      width: 35px;
-      height: 35px;
-      cursor: pointer;
+      z-index: 100;
+      left:0; top:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center; align-items: center;
     }
 
-    iframe.map {
-      width: 100%;
-      height: 400px;
-      border: none;
-      border-radius: 10px;
+    .modal-content { position: relative; max-width: 80%; max-height: 80%; }
+    .modal-content img { width: 100%; border-radius: 10px; box-shadow: 0 0 20px white; }
+    iframe { width: 800px; height: 450px; border: none; border-radius: 10px; }
+
+    .close-btn { 
+      position: absolute; top: -50px; right: 0; 
+      background: #e74c3c; color: white; border: none; 
+      width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer;
     }
 
-    @media (max-width: 600px) {
-      h1 { font-size: 2em; }
-      button { padding: 10px 18px; font-size: 14px; }
-      .gallery img { width: 100%; max-width: 100%; }
+    @media (max-width: 550px) {
+      .menu-container { transform: scale(0.7); }
+      iframe { width: 100%; height: 300px; }
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Tunceli Müzesi</h1>
-
-  <div class="buttons">
-    <button onclick="showContent('info')">Müze Hakkında</button>
-    <button onclick="showVideo('dQw4w9WgXcQ')">Tanıtım Videosu</button>
-    <button onclick="showContent('photos')">Fotoğraflar</button>
-    <button onclick="showContent('location')">Konum</button>
+  <div class="menu-container" id="mainMenu">
+    <div class="center-circle">
+      <h1>TUNCELİ<br>MÜZESİ</h1>
+    </div>
+    
+    <div class="buttons">
+      <button class="nav-btn btn-info" onclick="showContent('info')"><span>🏛️</span>Müze Hakkında</button>
+      <button class="nav-btn btn-video" onclick="showVideo('e0ZjN82BlqI')"><span>🎥</span>Tanıtım Videosu</button>
+      <button class="nav-btn btn-photos" onclick="showContent('photos')"><span>🖼️</span>Fotoğraflar</button>
+      <button class="nav-btn btn-location" onclick="showContent('location')"><span>📍</span>Konum</button>
+    </div>
   </div>
 
   <div id="info" class="content">
-    <h2>Müze Hakkında</h2>
-    <p>
-      1937 yılında Alman mimarlar tarafından tasarlanan ve askeri amaçlı yapılan “Erken Cumhuriyet Dönemi Yapısı” olması ve kültür varlığı özelliği göstermesi nedeniyle tescil edilerek koruma altına alınan 3 katlı Kışla Binası, kent merkezinin kurulumu sırasında döneminin ilk büyük yapısı olup, 1937 ile 1949 yılları arasında Askeri Kışla, 1949 yılından 2015 yılına kadar memur lojmanları olarak kullanılmıştır.
-    </p>
-    <p>
-      5800 m² kapalı alana, 1800 m² büyüklüğünde avluya sahip Eski Kışla binasının, 2015-2020 yılları arasında gerçekleştirilen restorasyonla «Tunceli Müzesi»ne dönüştürülmesi ile birlikte ilimizdeki insanlar boş zamanlarını nitelikli bir şekilde sosyal ve kültürel etkinlikleri gerçekleştirebildikleri bir ortama kavuşmuşlardır.
-    </p>
-    <p>
-      Tunceli Müzesi aynı zamanda İlimizin bilinen en eski gününden yakın zamana kadar önemli bulgu, bilgi, belgelerle birlikte yazılı ve görsel hafızasının oluşturulup korunduğu ve her birimiyle yaşayan aktif bir kültür mekanıdır.
-    </p>
-    <p>
-      Arkeoloji, Etnografya, Sikke, Geleneksel Tarım, Flora-Fauna, İnanç, Taş Eserler ve Yakın Tarih Bölümlerinin ve sergi salonlarının yer aldığı müzenin Arkeoloji, Etnografya ve Sikke envanterine kayıtlı toplam 1838 eser bulunmaktadır.
-    </p>
-    <p>
-      24 Aralık 2020 tarihinde resmen faaliyete geçmesinin henüz üçüncü yılı dolmadan içinde barındırdığı değerler ve özellikleriyle bilindik müzelerden farklılığı nedeniyle Tunceli Müzesi, 2022 yılında ülkemizden Göbeklitepe ve Van Müzesinin de dahil olduğu Avrupa Komisyonu himayesindeki ‘Avrupa Müze Forumu’ (European Museum Forum-EMYA) Avrupa’nın En İyi Müzeleri yarışmasında kendi kategorisinde finale kalmış ‘Müzelere değer katan bir anlayış ve özveri ile yapılan bir Müze olduğu’ değerlendirmesiyle müzeye bir sertifika verilmiştir.
-    </p>
-    <p>
-      2023 yılında yine Avrupa Komisyonu himayesinde Avrupa Müze Akademisi (European Museum Academy-EMA) tarafından düzenlenen ‘European Museum Academy Luigi Micheletti’ ödüllerinde Tunceli Müzesi Avrupa’nın en iyi 3 müzesinden biri unvanını alma başarısını göstermiştir.
-    </p>
+    <button class="back-btn" onclick="returnToMenu()">⬅ Ana Menüye Dön</button>
+    <h2>🏛️ Müze Hakkında</h2>
+    <p>2019 yılında Bakanlık Makam Onayı ile Tunceli Müze Müdürlüğü olarak kuruluşu gerçekleşen Müzenin, 2019 ve 2020 tarihlerinde teşhir-tanzim çalışmaları tamamlanarak 24 Aralık 2020 tarihinde ziyarete açılmıştır.</p>
+    <p>Müze olarak kullanılan bu tarihi bina, 1935 yılında temelleri atılmış "Erken Cumhuriyet Dönemi Yapısı" özelliği göstermektedir.</p>
+    <p>1937 yılında tamamlanan bina, 1949 yılına kadar Askeri Kışla, daha sonra ise Memur Lojmanı olarak kullanılmıştır. 2015 yılında restorasyon süreci başlamış ve kışladan müzeye dönüştürülmüştür.</p>
+    <p>Alman mimarisi tarzına sahip bina, yaklaşık 5.500 m² alan üzerine kurulu olup kare formdadır. Müze; prehistorik dönemden bugüne insanlığın yaşam serüvenini anlatan altı salondan oluşmaktadır.</p>
   </div>
 
   <div id="photos" class="content">
-    <h2>Fotoğraflar</h2>
+    <button class="back-btn" onclick="returnToMenu()">⬅ Ana Menüye Dön</button>
+    <h2>🖼️ Fotoğraflar</h2>
     <div class="gallery">
-      <img src="tunceli_muze1.jpg" alt="Tunceli Müzesi 1" onclick="openPhoto(this.src)">
-      <img src="tunceli_muze2.jpg" alt="Tunceli Müzesi 2" onclick="openPhoto(this.src)">
-      <img src="tunceli_muze3.jpg" alt="Tunceli Müzesi 3" onclick="openPhoto(this.src)">
-      <img src="tunceli_muze4.jpg" alt="Tunceli Müzesi 4" onclick="openPhoto(this.src)">
-      <img src="tunceli_muze5.jpg" alt="Tunceli Müzesi 5" onclick="openPhoto(this.src)">
+      <img src="tunceli_muze1.jpg" onclick="openPhoto(this.src)" alt="Müze Görseli 1">
+      <img src="tunceli_muze2.jpg" onclick="openPhoto(this.src)" alt="Müze Görseli 2">
+      <img src="tunceli_muze3.jpg" onclick="openPhoto(this.src)" alt="Müze Görseli 3">
+      <img src="tunceli_muze4.jpg" onclick="openPhoto(this.src)" alt="Müze Görseli 4">
     </div>
   </div>
 
   <div id="location" class="content">
-    <h2>Konum</h2>
-    <iframe class="map" src="https://www.google.com/maps?q=39.104525,39.548306&hl=tr&z=15&output=embed" allowfullscreen></iframe>
+    <button class="back-btn" onclick="returnToMenu()">⬅ Ana Menüye Dön</button>
+    <h2>📍 Konum</h2>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3088.358210356515!2d39.54637567657929!3d39.10292857413693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x407027376a91c13d%3A0xc391b7d591873197!2sTunceli%20M%C3%BCzesi!5e0!3m2!1str!2str!4v1710000000000!5m2!1str!2str"></iframe>
   </div>
 
-  <!-- Video Modal -->
-  <div id="videoModal" class="modal">
-    <div class="modal-content">
-      <button class="close" onclick="closeVideo()">&times;</button>
-      <iframe id="videoFrame" src="" allowfullscreen></iframe>
-    </div>
+  <div id="mediaModal" class="modal">
+    <div class="modal-content" id="modalContainer"></div>
   </div>
 
-  <!-- Fotoğraf Modal -->
-  <div id="photoModal" class="photo-modal">
-    <button class="close" onclick="closePhoto()">&times;</button>
-    <img id="photoModalImg" src="">
-  </div>
+<script>
+// İÇERİĞİ GÖSTER VE MENÜYÜ GİZLE
+function showContent(id) {
+  document.getElementById('mainMenu').classList.add('menu-hidden');
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('show'));
+  const target = document.getElementById(id);
+  target.classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  <script>
-    function showContent(id) {
-      document.querySelectorAll('.content').forEach(c => c.classList.remove('show'));
-      document.getElementById(id).classList.add('show');
-    }
+// MENÜYE GERİ DÖN
+function returnToMenu() {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('show'));
+  document.getElementById('mainMenu').classList.remove('menu-hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    // Video modal
-    function showVideo(videoId) {
-      const modal = document.getElementById('videoModal');
-      const frame = document.getElementById('videoFrame');
-      frame.src = `https://www.youtube.com/embed/${videoId}`; // autoplay yok
-      modal.style.display = 'flex';
-    }
+// FOTOĞRAF AÇ
+function openPhoto(src) {
+  const modal = document.getElementById('mediaModal');
+  const container = document.getElementById('modalContainer');
+  container.innerHTML = `<button class="close-btn" onclick="closeMedia()">×</button><img src="${src}">`;
+  modal.style.display = 'flex';
+}
 
-    function closeVideo() {
-      const modal = document.getElementById('videoModal');
-      const frame = document.getElementById('videoFrame');
-      frame.src = ''; // video durur
-      modal.style.display = 'none';
-    }
+// VİDEO AÇ
+function showVideo(videoId) {
+  const modal = document.getElementById('mediaModal');
+  const container = document.getElementById('modalContainer');
+  container.innerHTML = `<button class="close-btn" onclick="closeMedia()">×</button><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  modal.style.display = 'flex';
+}
 
-    // Fotoğraf modal
-    function openPhoto(src) {
-      const modal = document.getElementById('photoModal');
-      const img = document.getElementById('photoModalImg');
-      img.src = src;
-      modal.style.display = 'flex';
-    }
-
-    function closePhoto() {
-      const modal = document.getElementById('photoModal');
-      modal.style.display = 'none';
-      document.getElementById('photoModalImg').src = '';
-    }
-
-    // Modal dışında tıklayınca kapatma
-    window.onclick = function(e) {
-      if (e.target == document.getElementById('videoModal')) closeVideo();
-      if (e.target == document.getElementById('photoModal')) closePhoto();
-    }
-  </script>
+// MODAL KAPAT
+function closeMedia() {
+  document.getElementById('mediaModal').style.display = 'none';
+  document.getElementById('modalContainer').innerHTML = '';
+}
+</script>
 
 </body>
 </html>
