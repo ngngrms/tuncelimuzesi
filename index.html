@@ -166,9 +166,37 @@
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
 
+    /* Galeri Navigasyon Butonları */
+    .modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 28px;
+      padding: 15px 20px;
+      cursor: pointer;
+      border-radius: 50%;
+      user-select: none;
+      transition: all 0.3s;
+      z-index: 2050;
+    }
+    .modal-nav:hover {
+      background: var(--primary-blue);
+      box-shadow: 0 0 15px var(--primary-blue);
+    }
+    .modal-prev { left: 30px; }
+    .modal-next { right: 30px; }
+
     iframe { width: 100%; height: 100%; border: none; }
 
-    @media (max-width: 600px) { .menu-container { transform: scale(0.65); } }
+    @media (max-width: 600px) { 
+      .menu-container { transform: scale(0.65); } 
+      .modal-nav { padding: 10px 15px; font-size: 20px; }
+      .modal-prev { left: 10px; }
+      .modal-next { right: 10px; }
+    }
   </style>
 </head>
 
@@ -191,7 +219,19 @@
   <div id="info" class="content">
     <button class="back-btn" onclick="returnToMenu()">← ANA MENÜ</button>
     <h2 style="color: var(--primary-blue);">Müze Hakkında</h2>
-    <p style="line-height: 1.8; color: #ccc;">Tunceli Müzesi, 1935 yılında inşa edilen tarihi kışla binasında yer almaktadır. 2020 yılında ziyarete açılan müze, bölgenin arkeolojik, etnografik ve inançsal değerlerini modern bir teşhir anlayışıyla sunar.</p>
+    <p style="line-height: 1.8; color: #ccc;">1937 yılında Alman mimarlar tarafından tasarlanan ve askeri amaçlı yapılan “Erken Cumhuriyet Dönemi Yapısı” olması ve kültür varlığı özelliği göstermesi nedeniyle tescil edilerek koruma altına alınan 3 katlı Kışla Binası, kent merkezinin kurulumu sırasında döneminin ilk büyük yapısı olup, 1937 ile 1949 yılları arasında Askeri Kışla, 1949 yılından 2015 yılına kadar memur lojmanları olarak kullanılmıştır.
+
+5800 m² kapalı alana, 1800 m² büyüklüğünde avluya sahip Eski Kışla binasının, 2015-2020 yılları arasında gerçekleştirilen restorasyonla «Tunceli Müzesi»nedönüştürülmesi ile birlikte ilimizdeki insanlar boş zamanlarını nitelikli bir şekilde sosyal ve kültürel etkinlikleri gerçekleştirebildikleri bir ortama kavuşmuşlardır.
+
+Tunceli Müzesi aynı zamanda İlimizin bilinen en eski gününden yakın zamana kadar önemli bulgu, bilgi, belgelerle birlikte yazılı ve görsel hafızasının oluşturulup korunduğu ve her birimiyle yaşayan aktif bir kültür mekanıdır.
+
+Arkeoloji, Etnografya, Sikke, Geleneksel Tarım, Flora-Fauna, İnanç, Taş Eserler ve Yakın Tarih Bölümlerinin ve sergi salonlarının yer aldığı müzenin Arkeoloji, Etnografya ve Sikke envanterine kayıtlı toplam 1838 eser bulunmaktadır.
+
+24 Aralık 2020 tarihinde resmen faaliyete geçmesinin henüz üçüncü yılı dolmadan içinde barındırdığı değerler ve özellikleriyle bilindik müzelerden farklılığı nedeniyle Tunceli Müzesi, 2022 yılında ülkemizden Göbeklitepe ve Van Müzesinin de dahil olduğu Avrupa Komisyonu himayesindeki ‘Avrupa Müze Forumu’ (European Museum Forum-EMYA) Avrupa’nın En İyi Müzeleri yarışmasında kendi kategorisinde finale kalmış ‘Müzelere değer katan bir anlayış ve özveri ile yapılan bir Müze olduğu’ değerlendirmesiyle müzeye bir sertifika verilmiştir.
+
+2023 yılında yine Avrupa Komisyonu himayesinde Avrupa Müze Akademisi (European Museum Academy-EMA) tarafından düzenlenen ‘European Museum Academy Luigi Micheletti’ ödüllerinde Tunceli Müzesi Avrupa’nın en iyi 3 müzesinden biri unvanını alma başarısını göstermiştir.
+
+Tunceli Müzesini 2021 yılında 13.993;2022 yılında 23.255; 2023 yılında 22.000 kişi ziyaret etmiştir.</p>
   </div>
 
   <div id="photos" class="content">
@@ -222,6 +262,11 @@
   </div>
 
 <script>
+  // Aktif resmin dizin takibi için değişken
+  let currentImgIndex = 0;
+  // Galerideki tüm resim adreslerini tutacak dizi
+  const imagesList = Array.from(document.querySelectorAll('.gallery img')).map(img => img.src);
+
   // Bölümleri göster
   function showContent(id) {
     document.getElementById('mainMenu').classList.add('menu-hidden');
@@ -260,10 +305,36 @@
 
   // RESİM MODALI
   function showImageModal(src) {
-    const modal = document.getElementById('fullscreenModal');
+    // Tıklanan resmin listedeki sırasını bulup kaydet
+    currentImgIndex = imagesList.indexOf(src);
+    updateImageModal(src);
+    document.getElementById('fullscreenModal').style.display = 'block';
+  }
+
+  // Resim içeriğini ve ileri/geri butonlarını güncelleyen yardımcı fonksiyon
+  function updateImageModal(src) {
     const body = document.getElementById('modalBody');
-    body.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%;"><img src="${src}" style="max-width:90%; max-height:90%; border-radius:10px; box-shadow:0 0 30px white;"></div>`;
-    modal.style.display = 'block';
+    body.innerHTML = `
+      <div class="modal-nav modal-prev" onclick="prevImage(event)">❮</div>
+      <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+        <img src="${src}" style="max-width:90%; max-height:90%; border-radius:10px; box-shadow:0 0 30px white; user-select:none;">
+      </div>
+      <div class="modal-nav modal-next" onclick="nextImage(event)">❯</div>
+    `;
+  }
+
+  // Sonraki resme geç
+  function nextImage(event) {
+    if (event) event.stopPropagation(); // Kapatma tetiklenmesini önle
+    currentImgIndex = (currentImgIndex + 1) % imagesList.length;
+    updateImageModal(imagesList[currentImgIndex]);
+  }
+
+  // Önceki resme geç
+  function prevImage(event) {
+    if (event) event.stopPropagation(); // Kapatma tetiklenmesini önle
+    currentImgIndex = (currentImgIndex - 1 + imagesList.length) % imagesList.length;
+    updateImageModal(imagesList[currentImgIndex]);
   }
 
   // MODALI KAPAT
@@ -275,9 +346,17 @@
     document.body.style.overflow = 'auto'; // Kaydırmayı geri aç
   }
 
-  // ESC ile kapatma
+  // ESC ve Ok Tuşları ile Kontrol
   document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") closeFullscreenModal();
+    const modal = document.getElementById('fullscreenModal');
+    if (modal.style.display === 'block') {
+      // Eğer modal içinde resim gösteriliyorsa (yani modal-nav butonları varsa) ok tuşları çalışsın
+      const isImage = document.querySelector('.modal-nav') !== null;
+      
+      if (e.key === "Escape") closeFullscreenModal();
+      if (isImage && e.key === "ArrowRight") nextImage();
+      if (isImage && e.key === "ArrowLeft") prevImage();
+    }
   });
 </script>
 
